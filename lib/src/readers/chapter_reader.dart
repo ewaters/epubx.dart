@@ -1,3 +1,4 @@
+import '../options.dart';
 import '../ref_entities/epub_book_ref.dart';
 import '../ref_entities/epub_chapter_ref.dart';
 import '../ref_entities/epub_text_content_file_ref.dart';
@@ -32,8 +33,14 @@ class ChapterReader {
       contentFileName = Uri.decodeFull(contentFileName!);
       EpubTextContentFileRef? htmlContentFileRef;
       if (!bookRef.Content!.Html!.containsKey(contentFileName)) {
-        throw Exception(
-            'Incorrect EPUB manifest: item with href = \"$contentFileName\" is missing.');
+        if (globalOptions.ignoreMissingReferences) {
+          globalOptions.maybeOnError('Incorrect EPUB manifest: '
+              'item with href = \"$contentFileName\" is missing.; ignoring');
+          return;
+        } else {
+          throw Exception(
+              'Incorrect EPUB manifest: item with href = \"$contentFileName\" is missing.');
+        }
       }
 
       htmlContentFileRef = bookRef.Content!.Html![contentFileName];
