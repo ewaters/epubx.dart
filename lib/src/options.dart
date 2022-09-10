@@ -13,7 +13,12 @@ class EpubOptions {
   });
 
   /// Calls [onError] with [msg] if it was set.
-  void maybeOnError(String msg) => onError != null && onError!(msg);
+  void maybeOnError(String msg) {
+    if (onError == null) {
+      return;
+    }
+    onError!(msg);
+  }
 }
 
 /// The set of global options. Will be changed via [setGlobalEpubOptions].
